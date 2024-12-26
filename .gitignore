@@ -22,4 +22,5 @@ Cargo.lock
 
 result_*.txt
 eval/dataset
+eval/input
 eval/output
