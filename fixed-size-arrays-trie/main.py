@@ -93,13 +93,15 @@ class Trie:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        raise ValueError("Usage: python main.py <input_file> <query_file> <output_file>")
     input_file_path = sys.argv[1]
     query_file_path = sys.argv[2]
+    output_file_path = sys.argv[3]
     with open(input_file_path, "r") as input_file:
         input_contents = input_file.read()
     with open(query_file_path, "r") as query_file:
         query_contents = query_file.read()
-    output_file_path = f"result_{input_file_path.split('/')[-1]}"
     input_words = input_contents.split("\n")[:-1]
     query_lines = query_contents.split("\n")[:-1]
 
