@@ -20,15 +20,24 @@ run.add(
 
 # Experiment 1:
 # - words in ascending order
+run.group("exp1")
 project = "fixed-size-arrays-trie"
 run.add(
-    "benchmark-exp1",
+    "benchmark",
     f"python3 benchmark.py {project} {input_file_path} ./input/empty-queries.txt ./output/tmp-results.txt",
     {"num_words": num_words},
     header_command="python3 benchmark.py --header",
     stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
 )
 
+run.add(
+    "plot",
+    "python3 plot_n_vs_time_or_space.py ./output/benchmark-results-exp1-fixed-size-arrays-trie.csv construction_memory MiB ./output/exp1_n_vs_construction_time.png",
+    {},
+)
+
+# Experiment 2
+run.group("exp2")
 query_all_words_file_path = f"./input/query_all_{os.path.basename(input_file_path)}"
 run.add(
     "gen_query_file",
@@ -40,9 +49,8 @@ run.add(
     creates_file=query_all_words_file_path,
 )
 
-# Experiment 2
 run.add(
-    "benchmark-exp2",
+    "benchmark",
     f"python3 benchmark.py {project} {input_file_path} {query_all_words_file_path} ./output/tmp-results.txt",
     {"num_words": num_words},
     header_command="python3 benchmark.py --header",

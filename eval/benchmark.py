@@ -31,12 +31,14 @@ def print_result(project_name, input_file, query_file, output_file):
         results["query_time"],
     )
     print(
-        f"{n},{l},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
+        f"{project_name},{n},{l},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
     )
 
 
 def print_header():
-    print("n,l,input_file,query_file,construction_time,construction_memory,query_time")
+    print(
+        "project_name,n,l,input_file,query_file,construction_time,construction_memory,query_time"
+    )
 
 
 if __name__ == "__main__":
