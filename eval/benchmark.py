@@ -12,7 +12,9 @@ def parse_result(result_string: str, pattern: str) -> dict:
 
 
 def benchmark_project(project_name, input_file, query_file, output_file):
-    command = f"python3 ../{project_name}/main.py {input_file} {query_file} {output_file}"
+    command = (
+        f"python3 ../{project_name}/main.py {input_file} {query_file} {output_file}"
+    )
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
         sys.exit(result.stderr)
@@ -29,12 +31,12 @@ def print_result(project_name, input_file, query_file, output_file):
         results["query_time"],
     )
     print(
-        f"{n},{l},{input_file},{construction_time},{construction_memory},{query_time}"
+        f"{n},{l},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
     )
 
 
 def print_header():
-    print("n,l,input_file,construction_time,construction_memory,query_time")
+    print("n,l,input_file,query_file,construction_time,construction_memory,query_time")
 
 
 if __name__ == "__main__":
@@ -45,7 +47,9 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if len(sys.argv) != 5:
-        print("Usage: python <project_name> <input_file> <query_file> <output_file> [--header]")
+        print(
+            "Usage: python <project_name> <input_file> <query_file> <output_file> [--header]"
+        )
         sys.exit(1)
 
     print_result(*args)

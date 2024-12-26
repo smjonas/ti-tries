@@ -18,23 +18,34 @@ run.add(
     creates_file=input_file_path,
 )
 
+# Experiment 1:
+# - words in ascending order
 project = "fixed-size-arrays-trie"
 run.add(
-    "benchmark",
+    "benchmark-exp1",
     f"python3 benchmark.py {project} {input_file_path} ./input/empty-queries.txt ./output/tmp-results.txt",
     {"num_words": num_words},
     header_command="python3 benchmark.py --header",
-    stdout_file=f"./output/benchmark-results-{project}.csv",
+    stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
 )
 
+query_all_words_file_path = f"./input/query_all_{os.path.basename(input_file_path)}"
 run.add(
     "gen_query_file",
     f"python3 gen_query_file.py {input_file_path} [[query_all_words_file_name]] {seed}",
     {
         "num_words": num_words,
-        "query_all_words_file_name": f"./input/query_all_{os.path.basename(input_file_path)}",
+        "query_all_words_file_name": query_all_words_file_path,
     },
-    creates_file=f"./input/query_all_{os.path.basename(input_file_path)}",
+    creates_file=query_all_words_file_path,
 )
 
+# Experiment 2
+run.add(
+    "benchmark-exp2",
+    f"python3 benchmark.py {project} {input_file_path} {query_all_words_file_path} ./output/tmp-results.txt",
+    {"num_words": num_words},
+    header_command="python3 benchmark.py --header",
+    stdout_file=f"./output/benchmark-results-exp2-{project}.csv",
+)
 run.run()
