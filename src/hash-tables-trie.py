@@ -23,7 +23,8 @@ class Trie:
         current = self.root
         for i, ch in enumerate(word):
             is_last_char = i == len(word) - 1
-            if ch not in current.children:
+            child = current.children.get(ch, None)
+            if child is None:
                 child = Node()
                 current.children[ch] = child
                 if is_last_char:

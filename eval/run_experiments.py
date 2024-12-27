@@ -21,17 +21,21 @@ run.add(
 # Experiment 1:
 # - words in ascending order
 run.group("exp1")
-project = "fixed-size-arrays-trie"
-run.add(
-    "benchmark",
-    f"python3 benchmark.py {project} {input_file_path} ./input/empty-queries.txt ./output/tmp-results.txt",
-    {"num_words": num_words},
-    header_command="python3 benchmark.py --header",
-    stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
+projects = ["fixed-size-arrays-trie", "hash-tables-trie"]
+for project in projects:
+    run.add(
+        f"benchmark-{project}-exp1",
+        f"python3 benchmark.py {project} {input_file_path} ./input/empty-queries.txt ./output/tmp-results.txt",
+        {"num_words": num_words},
+        header_command="python3 benchmark.py --header",
+        stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
+    )
+project_result_files = " ".join(
+    [f"./output/benchmark-results-exp1-{project}.csv" for project in projects]
 )
 run.add(
-    "plot",
-    "python3 plot_n_vs_any.py ./output/benchmark-results-exp1-fixed-size-arrays-trie.csv construction_memory MiB ./output/exp1_n_vs_construction_memory.png",
+    "plot-exp1",
+    f"python3 plot_n_vs_any.py construction_memory MiB ./output/exp1_n_vs_construction_memory.png {project_result_files}",
     {},
 )
 
@@ -47,16 +51,18 @@ run.add(
     },
     creates_file=query_all_words_file_path,
 )
-run.add(
-    "benchmark-exp2",
-    f"python3 benchmark.py {project} {input_file_path} {query_all_words_file_path} ./output/tmp-results.txt",
-    {"num_words": num_words},
-    header_command="python3 benchmark.py --header",
-    stdout_file=f"./output/benchmark-results-exp2-{project}.csv",
-)
+projects = ["fixed-size-arrays-trie", "hash-tables-trie"]
+for project in projects:
+    run.add(
+        f"benchmark-{project}-exp2",
+        f"python3 benchmark.py {project} {input_file_path} {query_all_words_file_path} ./output/tmp-results.txt",
+        {"num_words": num_words},
+        header_command="python3 benchmark.py --header",
+        stdout_file=f"./output/benchmark-results-exp2-{project}.csv",
+    )
 run.add(
     "plot-exp2",
-    "python3 plot_n_vs_any.py ./output/benchmark-results-exp2-fixed-size-arrays-trie.csv query_time ms ./output/exp2_n_vs_query_time.png",
+    "python3 plot_n_vs_any.py ./output/benchmark-results-exp2-{project}.csv query_time ms ./output/exp2_n_vs_query_time.png",
     {},
 )
 

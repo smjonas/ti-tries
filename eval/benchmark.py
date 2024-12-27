@@ -13,7 +13,7 @@ def parse_result(result_string: str, pattern: str) -> dict:
 
 def benchmark_project(project_name, input_file, query_file, output_file):
     command = (
-        f"python3 ../{project_name}/main.py {input_file} {query_file} {output_file}"
+        f"python3 ../src/{project_name}.py {input_file} {query_file} {output_file}"
     )
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
