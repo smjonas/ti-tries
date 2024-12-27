@@ -21,7 +21,11 @@ run.add(
 # Experiment 1:
 # - words in ascending order
 run.group("exp1")
-projects = ["fixed-size-arrays-trie", "hash-tables-trie"]
+projects = [
+    "fixed-size-arrays-trie",
+    "hash-tables-trie",
+    "balanced-search-tree-trie",
+]
 for project in projects:
     run.add(
         f"benchmark-{project}-exp1",
@@ -30,12 +34,12 @@ for project in projects:
         header_command="python3 benchmark.py --header",
         stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
     )
-project_result_files = " ".join(
+project_result_files_exp1 = " ".join(
     [f"./output/benchmark-results-exp1-{project}.csv" for project in projects]
 )
 run.add(
     "plot-exp1",
-    f"python3 plot_n_vs_any.py construction_memory MiB ./output/exp1_n_vs_construction_memory.png {project_result_files}",
+    f"python3 plot_n_vs_any.py construction_memory MiB ./output/exp1_n_vs_construction_memory.png {project_result_files_exp1}",
     {},
 )
 
@@ -51,7 +55,6 @@ run.add(
     },
     creates_file=query_all_words_file_path,
 )
-projects = ["fixed-size-arrays-trie", "hash-tables-trie"]
 for project in projects:
     run.add(
         f"benchmark-{project}-exp2",
@@ -60,9 +63,12 @@ for project in projects:
         header_command="python3 benchmark.py --header",
         stdout_file=f"./output/benchmark-results-exp2-{project}.csv",
     )
+project_result_files_exp2 = " ".join(
+    [f"./output/benchmark-results-exp2-{project}.csv" for project in projects]
+)
 run.add(
     "plot-exp2",
-    "python3 plot_n_vs_any.py ./output/benchmark-results-exp2-{project}.csv query_time ms ./output/exp2_n_vs_query_time.png",
+    f"python3 plot_n_vs_any.py query_time ms ./output/exp2_n_vs_query_time.png {project_result_files_exp2}",
     {},
 )
 
