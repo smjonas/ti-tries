@@ -2,11 +2,11 @@ import os
 
 import run
 
-num_words_max = 1000
-words_step_size = 100
-word_length = 10
+num_words_max = 100_000
+words_step_size = 1000
+word_length = 20
 
-queries_step_size = 100
+queries_step_size = 500
 
 seed = 42
 
@@ -84,9 +84,7 @@ num_queries = [
 ]
 input_file_path = f"./dataset/trie_n-{num_words_max}_l-{word_length}.txt"
 for mode in ["insert", "delete"]:
-    query_file_path = (
-        f"./queries/{mode}/m-{mode}_k-[[num_queries]]_{os.path.basename(input_file_path)}"
-    )
+    query_file_path = f"./queries/{mode}/m-{mode}_k-[[num_queries]]_{os.path.basename(input_file_path)}"
     run.add(
         f"gen-{mode}-query-file",
         f"python3 gen_insert_delete_dataset.py {input_file_path} {mode} [[num_queries]] {query_file_path} {seed}",
@@ -95,9 +93,7 @@ for mode in ["insert", "delete"]:
     )
 
 project_result_files_exp3 = []
-query_file_path_template = (
-    f"./queries/[[mode]]/m-[[mode]]_k-[[num_queries]]_{os.path.basename(input_file_path)}"
-)
+query_file_path_template = f"./queries/[[mode]]/m-[[mode]]_k-[[num_queries]]_{os.path.basename(input_file_path)}"
 for project in projects:
     exp3_results_file = f"./output/benchmark-results-exp3-{project}.csv"
     run.add(

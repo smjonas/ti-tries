@@ -12,7 +12,6 @@ def plot_results(
     y_column_unit,
     output_path,
 ):
-    # Combine multiple CSVs into a single DataFrame
     df = pd.concat([pd.read_csv(csv) for csv in results_csvs], ignore_index=True)
     projects = df["project_name"].unique()
     colors = plt.cm.tab20.colors
@@ -20,10 +19,17 @@ def plot_results(
     plt.figure(figsize=(12, 6))
     for project, color in zip(projects, colors):
         subset = df[df["project_name"] == project]
-        plt.scatter(subset[x_column], subset[y_column], label=f"{project}", color=color)
+        subset = subset.sort_values(by=x_column)
+        plt.plot(
+            subset[x_column],
+            subset[y_column],
+            label=f"{project}",
+            linestyle="-",
+            color=color,
+        )
 
     plt.xlim(0)
-    # plt.ylim(0)
+    plt.ylim(0)
     plt.xlabel(x_column_label)
     plt.ylabel(f"{y_column.replace('_', ' ').title()} ({y_column_unit})")
     plt.legend()
@@ -35,7 +41,7 @@ def plot_results(
 if __name__ == "__main__":
     if len(sys.argv) < 6:
         sys.exit(
-            "Usage: python plot.py <x_column> <x_column_label> <y_column> <y_column_unit> <output_path> <results_csv1> [<results_csv2> ...]"
+            "Usage: python plot_n_vs_time_or_space.py <x_column> <x_column_label> <y_column> <y_column_unit> <output_path> <results_csv1> [<results_csv2> ...]"
         )
 
     x_column = sys.argv[1]
