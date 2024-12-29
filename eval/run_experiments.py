@@ -85,7 +85,7 @@ num_queries = [
 input_file_path = f"./dataset/trie_n-{num_words_max}_l-{word_length}.txt"
 for mode in ["insert", "delete"]:
     query_file_path = (
-        f"./queries/{mode}/{mode}_k-[[num_queries]]_{os.path.basename(input_file_path)}"
+        f"./queries/{mode}/m-{mode}_k-[[num_queries]]_{os.path.basename(input_file_path)}"
     )
     run.add(
         f"gen-{mode}-query-file",
@@ -95,19 +95,22 @@ for mode in ["insert", "delete"]:
     )
 
 project_result_files_exp3 = []
+query_file_path_template = (
+    f"./queries/[[mode]]/m-[[mode]]_k-[[num_queries]]_{os.path.basename(input_file_path)}"
+)
 for project in projects:
     exp3_results_file = f"./output/benchmark-results-exp3-{project}.csv"
     run.add(
         f"benchmark-{project}-exp3",
-        f"python3 benchmark.py {project} {input_file_path} {query_file_path} ./output/tmp-results.txt",
-        {"num_queries": num_queries},
+        f"python3 benchmark.py {project} {input_file_path} {query_file_path_template} ./output/tmp-results.txt",
+        {"num_queries": num_queries, "mode": ["insert", "delete"]},
         header_command="python3 benchmark.py --header",
         stdout_file=exp3_results_file,
     )
     project_result_files_exp3.append(exp3_results_file)
 run.add(
     "plot-exp3",
-    f'python3 plot.py k "Number of Queries" query_time ms ./output/exp3_k_vs_query_time.png {" ".join(project_result_files_exp3)}',
+    f'python3 plot_k_vs_query_time.py ./output/exp3_k_vs_query_time.png {" ".join(project_result_files_exp3)}',
     {},
 )
 

@@ -7,7 +7,7 @@ def parse_result(result_string: str, pattern: str) -> dict:
     matches = re.findall(pattern, result_string)
     values = {}
     for key, value in matches:
-        values[key] = float(value)
+        values[key] = value
     return values
 
 
@@ -23,8 +23,13 @@ def benchmark_project(project_name, input_file, query_file, output_file):
 
 def print_result(project_name, input_file, query_file, output_file):
     input_params = parse_result(input_file, r"(\w)-([\d.]+)")
-    query_params = parse_result(query_file, r"(\w)-([\d.]+)")
-    k, n, l = query_params.get("k", "-"), input_params["n"], input_params["l"]
+    query_params = parse_result(query_file, r"(\w)-([\d.a-z]+)")
+    mode, k, n, l = (
+        query_params.get("m", "-"),
+        query_params.get("k", "-"),
+        input_params["n"],
+        input_params["l"],
+    )
     results = benchmark_project(project_name, input_file, query_file, output_file)
     construction_time, construction_memory, query_time = (
         results["trie_construction_time"],
@@ -32,13 +37,13 @@ def print_result(project_name, input_file, query_file, output_file):
         results["query_time"],
     )
     print(
-        f"{project_name},{n},{l},{k},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
+        f"{project_name},{n},{l},{k},{mode},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
     )
 
 
 def print_header():
     print(
-        "project_name,n,l,k,input_file,query_file,construction_time,construction_memory,query_time"
+        "project_name,n,l,k,mode,input_file,query_file,construction_time,construction_memory,query_time"
     )
 
 
@@ -50,9 +55,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if len(sys.argv) != 5:
-        print(
+        sys.exit(
             "Usage: python <project_name> <input_file> <query_file> <output_file> [--header]"
         )
-        sys.exit(1)
 
     print_result(*args)
