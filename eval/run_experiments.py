@@ -6,7 +6,7 @@ num_words_max = 100_000
 words_step_size = 1000
 word_length = 20
 
-queries_step_size = 500
+queries_step_size = 1000
 
 seed = 42
 

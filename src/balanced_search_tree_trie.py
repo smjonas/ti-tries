@@ -1,16 +1,19 @@
 import sys
-from avltree import AvlTree
 from dataclasses import dataclass
+from typing import Optional
 
 import base
+from avltree import AvlTree
 
 
 @dataclass
 class Node:
-    children: dict[str, "Node"]
+    children: Optional[AvlTree[str, "Node"]]
+    is_leaf: bool
 
     def __init__(self):
-        self.children = AvlTree[str, Node]({})
+        self.children = None
+        self.is_leaf = True
 
 
 @dataclass
@@ -24,43 +27,55 @@ class Trie:
         current = self.root
         for i, ch in enumerate(word):
             is_last_char = i == len(word) - 1
+            if current.children is None:
+                current.children = AvlTree[str, Node]()
             try:
                 child = current.children[ch]
             except KeyError:
-                # Child not present
                 child = Node()
                 current.children[ch] = child
+                current.is_leaf = False
                 if is_last_char:
                     return True
             current = child
-        # No new nodes created => already present
         return False
 
     def contains(self, word: str) -> bool:
         current = self.root
         for ch in word:
+            if current.children is None:
+                return False
             try:
                 child = current.children[ch]
                 current = child
             except KeyError:
                 return False
-        return len(current.children) == 0
+        return current.is_leaf
 
     def delete(self, word: str) -> bool:
+        stack = []  # To track nodes and indices for backtracking
         current = self.root
-        parent = None
-        key_to_delete = None
 
         for ch in word:
+            if current.children is None:
+                return False
             try:
-                child = current.children[ch]
-                parent = current
-                key_to_delete = ch
-                current = child
+                stack.append((current, ch))
+                current = current.children[ch]
             except KeyError:
                 return False
-        assert parent is not None and key_to_delete is not None
-        del parent.children[key_to_delete]
+
+        if current.children is not None and len(current.children) > 0:
+            return False  # Not a leaf node
+
+        # Backtrack and delete nodes if they are no longer needed
+        for parent, ch in reversed(stack):
+            assert parent.children is not None and ch in parent.children
+            del parent.children[ch]
+            if len(parent.children) > 0:
+                break
+            # Remove empty AvlTree
+            parent.children = None
         return True
 
 

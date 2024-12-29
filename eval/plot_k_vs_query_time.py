@@ -26,7 +26,7 @@ def plot_query_time(output_file, results_csvs):
                     color=colors[i % len(colors)],
                 )
 
-    plt.xlabel("Number of Queries (k)")
+    plt.xlabel("Number of Queries")
     plt.ylabel("Query Time (ms)")
     # plt.title("Query Time per k, Grouped by Mode")
     plt.legend()

@@ -36,7 +36,7 @@ class Trie:
     def contains(self, word: str) -> bool:
         current = self.root
         for ch in word:
-            child = current.children[ch]
+            child = current.children.get(ch, None)
             if child is None:
                 return False
             current = child

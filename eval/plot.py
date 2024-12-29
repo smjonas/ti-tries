@@ -14,7 +14,7 @@ def plot_results(
 ):
     df = pd.concat([pd.read_csv(csv) for csv in results_csvs], ignore_index=True)
     projects = df["project_name"].unique()
-    colors = plt.cm.tab20.colors
+    colors = plt.cm.tab10.colors
 
     plt.figure(figsize=(12, 6))
     for project, color in zip(projects, colors):
