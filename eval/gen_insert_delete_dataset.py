@@ -18,7 +18,7 @@ def get_delete_queries(trie_words, num_queries):
         raise ValueError(f"num_queries must be at most {num_words}, is {num_queries}")
     random_trie_words = random.choices(trie_words, k=num_queries)
     # Make each word one character longer to cause a cache miss on deletion
-    return list(map(lambda query_word: query_word[:-2] + "X\0 d", random_trie_words))
+    return list(map(lambda query_word: query_word[:-1] + "X d", random_trie_words))
 
 
 if __name__ == "__main__":

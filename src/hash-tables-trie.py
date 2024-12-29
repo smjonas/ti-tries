@@ -48,7 +48,7 @@ class Trie:
         key_to_delete = None
 
         for ch in word:
-            child = current.children[ch]
+            child = current.children.get(ch)
             if child is None:
                 return False
             parent = current

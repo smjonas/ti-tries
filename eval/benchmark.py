@@ -23,7 +23,8 @@ def benchmark_project(project_name, input_file, query_file, output_file):
 
 def print_result(project_name, input_file, query_file, output_file):
     input_params = parse_result(input_file, r"(\w)-([\d.]+)")
-    n, l = input_params["n"], input_params["l"]
+    query_params = parse_result(query_file, r"(\w)-([\d.]+)")
+    k, n, l = query_params.get("k", "-"), input_params["n"], input_params["l"]
     results = benchmark_project(project_name, input_file, query_file, output_file)
     construction_time, construction_memory, query_time = (
         results["trie_construction_time"],
@@ -31,13 +32,13 @@ def print_result(project_name, input_file, query_file, output_file):
         results["query_time"],
     )
     print(
-        f"{project_name},{n},{l},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
+        f"{project_name},{n},{l},{k},{input_file},{query_file},{construction_time},{construction_memory},{query_time}"
     )
 
 
 def print_header():
     print(
-        "project_name,n,l,input_file,query_file,construction_time,construction_memory,query_time"
+        "project_name,n,l,k,input_file,query_file,construction_time,construction_memory,query_time"
     )
 
 

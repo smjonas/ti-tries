@@ -41,13 +41,15 @@ project_result_files_exp1 = " ".join(
 )
 run.add(
     "plot-exp1",
-    f"python3 plot_n_vs_any.py construction_memory MiB ./output/exp1_n_vs_construction_memory.png {project_result_files_exp1}",
+    f'python3 plot.py n "Number of Words" construction_memory MiB ./output/exp1_n_vs_construction_memory.png {project_result_files_exp1}',
     {},
 )
 
 # Experiment 2
 run.group("exp2")
-query_contains_all_file_path = f"./queries/contains/contains_all_{os.path.basename(input_file_path)}"
+query_contains_all_file_path = (
+    f"./queries/contains/contains_all_{os.path.basename(input_file_path)}"
+)
 run.add(
     "gen-query-file",
     f"python3 gen_query_file.py {input_file_path} [[query_contains_all_file_path]] {seed}",
@@ -70,7 +72,7 @@ project_result_files_exp2 = " ".join(
 )
 run.add(
     "plot-exp2",
-    f"python3 plot_n_vs_any.py query_time ms ./output/exp2_n_vs_query_time.png {project_result_files_exp2}",
+    f'python3 plot.py n "Number of Words" query_time ms ./output/exp2_n_vs_query_time.png {project_result_files_exp2}',
     {},
 )
 
@@ -81,13 +83,32 @@ num_queries = [
     (i + 1) * queries_step_size for i in range(num_words_max // queries_step_size)
 ]
 input_file_path = f"./dataset/trie_n-{num_words_max}_l-{word_length}.txt"
-insert_query_file_path = (
-    f"./queries/insert/insert_k-[[num_queries]]_{os.path.basename(input_file_path)}"
-)
+for mode in ["insert", "delete"]:
+    query_file_path = (
+        f"./queries/{mode}/{mode}_k-[[num_queries]]_{os.path.basename(input_file_path)}"
+    )
+    run.add(
+        f"gen-{mode}-query-file",
+        f"python3 gen_insert_delete_dataset.py {input_file_path} {mode} [[num_queries]] {query_file_path} {seed}",
+        {"num_queries": num_queries},
+        creates_file=query_file_path,
+    )
+
+project_result_files_exp3 = []
+for project in projects:
+    exp3_results_file = f"./output/benchmark-results-exp3-{project}.csv"
+    run.add(
+        f"benchmark-{project}-exp3",
+        f"python3 benchmark.py {project} {input_file_path} {query_file_path} ./output/tmp-results.txt",
+        {"num_queries": num_queries},
+        header_command="python3 benchmark.py --header",
+        stdout_file=exp3_results_file,
+    )
+    project_result_files_exp3.append(exp3_results_file)
 run.add(
-    "gen-insert-query-file",
-    f"python3 gen_insert_delete_dataset.py {input_file_path} insert [[num_queries]] {insert_query_file_path} {seed}",
-    {"num_queries": num_queries},
+    "plot-exp3",
+    f'python3 plot.py k "Number of Queries" query_time ms ./output/exp3_k_vs_query_time.png {" ".join(project_result_files_exp3)}',
+    {},
 )
 
 run.run()

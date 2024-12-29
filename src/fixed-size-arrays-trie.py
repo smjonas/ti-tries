@@ -30,7 +30,7 @@ class Node:
 
 @dataclass
 class Trie:
-    root: base.Node
+    root: Node
 
     def __init__(self):
         self.root = Node()
