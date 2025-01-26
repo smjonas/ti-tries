@@ -11,9 +11,9 @@ def parse_result(result_string: str, pattern: str) -> dict:
     return values
 
 
-def benchmark_project(project_name, input_file, query_file, output_file):
+def benchmark_project(project_variant, input_file, query_file):
     command = (
-        f"python3 ../src/{project_name}.py {input_file} {query_file} {output_file}"
+        f"python3 ../src/base.py {project_variant} {input_file} {query_file}"
     )
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     if result.returncode != 0:
@@ -21,7 +21,7 @@ def benchmark_project(project_name, input_file, query_file, output_file):
     return parse_result(result.stdout, r"(\w+)=([\d.]+)")
 
 
-def print_result(project_name, input_file, query_file, output_file):
+def print_result(project_variant, project_name, input_file, query_file):
     input_params = parse_result(input_file, r"(\w)-([\d.]+)")
     query_params = parse_result(query_file, r"(\w)-([\d.a-z]+)")
     mode, k, n, l = (
@@ -30,7 +30,7 @@ def print_result(project_name, input_file, query_file, output_file):
         input_params["n"],
         input_params["l"],
     )
-    results = benchmark_project(project_name, input_file, query_file, output_file)
+    results = benchmark_project(project_variant, input_file, query_file)
     construction_time, construction_memory, query_time = (
         results["trie_construction_time"],
         results["trie_construction_memory"],
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) != 5:
         sys.exit(
-            "Usage: python <project_name> <input_file> <query_file> <output_file> [--header]"
+            "Usage: python <project_variant> <project_name> <input_file> <query_file> [--header]"
         )
 
     print_result(*args)

@@ -28,10 +28,10 @@ projects = [
     "hash-tables-trie",
     "balanced-search-tree-trie",
 ]
-for project in projects:
+for variant, project in enumerate(projects):
     run.add(
         f"benchmark-{project}-exp1",
-        f"python3 benchmark.py {project} {input_file_path} ./queries/empty-queries.txt ./output/tmp-results.txt",
+        f"python3 benchmark.py {variant + 1} {project} {input_file_path} ./queries/empty-queries.txt",
         {"num_words": num_words},
         header_command="python3 benchmark.py --header",
         stdout_file=f"./output/benchmark-results-exp1-{project}.csv",
@@ -59,10 +59,10 @@ run.add(
     },
     creates_file=query_contains_all_file_path,
 )
-for project in projects:
+for variant, project in enumerate(projects):
     run.add(
         f"benchmark-{project}-exp2",
-        f"python3 benchmark.py {project} {input_file_path} {query_contains_all_file_path} ./output/tmp-results.txt",
+        f"python3 benchmark.py {variant + 1} {project} {input_file_path} {query_contains_all_file_path}",
         {"num_words": num_words},
         header_command="python3 benchmark.py --header",
         stdout_file=f"./output/benchmark-results-exp2-{project}.csv",
@@ -94,11 +94,11 @@ for mode in ["insert", "delete"]:
 
 project_result_files_exp3 = []
 query_file_path_template = f"./queries/[[mode]]/m-[[mode]]_k-[[num_queries]]_{os.path.basename(input_file_path)}"
-for project in projects:
+for variant, project in enumerate(projects):
     exp3_results_file = f"./output/benchmark-results-exp3-{project}.csv"
     run.add(
         f"benchmark-{project}-exp3",
-        f"python3 benchmark.py {project} {input_file_path} {query_file_path_template} ./output/tmp-results.txt",
+        f"python3 benchmark.py {variant + 1} {project} {input_file_path} {query_file_path_template}",
         {"num_queries": num_queries, "mode": ["insert", "delete"]},
         header_command="python3 benchmark.py --header",
         stdout_file=exp3_results_file,

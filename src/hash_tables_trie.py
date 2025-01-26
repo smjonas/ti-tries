@@ -1,7 +1,4 @@
-import sys
 from dataclasses import dataclass
-
-import base
 
 
 @dataclass
@@ -57,14 +54,3 @@ class Trie:
         assert parent is not None and key_to_delete is not None
         del parent.children[key_to_delete]
         return True
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        sys.exit(
-            "Usage: python hash-tables-trie.py <input_file> <query_file> <output_file>"
-        )
-    input_file_path = sys.argv[1]
-    query_file_path = sys.argv[2]
-    output_file_path = sys.argv[3]
-    base.run(input_file_path, query_file_path, output_file_path, lambda: Trie())

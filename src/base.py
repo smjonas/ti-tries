@@ -1,12 +1,21 @@
+import os
 import resource
+import sys
 import time
+from pathlib import Path
 from typing import Callable
+
+import balanced_search_tree_trie
+import fixed_size_arrays_trie
+import hash_tables_trie
 
 # a-z, A-Z, 0-9, null byte
 ALPHABET_SIZE = 26 + 26 + 10 + 1
 
 
-def run(input_file_path, query_file_path, output_file_path, build_trie: Callable):
+def run(
+    variant, input_file_path, query_file_path, output_file_path, build_trie: Callable
+):
     with open(input_file_path, "r") as input_file:
         input_contents = input_file.read()
     with open(query_file_path, "r") as query_file:
@@ -43,6 +52,36 @@ def run(input_file_path, query_file_path, output_file_path, build_trie: Callable
     # Convert kilobytes to mebibytes
     trie_construction_memory_mib = (trie_construction_memory_kb * 1000) / 1_048_576
     print(
-        f"RESULT name=Jonas-Strittmatter trie_construction_time={trie_construction_time_ms:.4f} "
+        f"RESULT name=Jonas-Strittmatter trie_variant={variant} trie_construction_time={trie_construction_time_ms:.4f} "
         f"trie_construction_memory={trie_construction_memory_mib:.4f} query_time={query_time_ms:.4f}"
+    )
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        sys.exit("Usage: python base.py <variant> <input_file> <query_file>")
+    variant_str = sys.argv[1]
+    try:
+        variant = int(variant_str)
+        if variant < 1 or variant > 3:
+            raise ValueError()
+    except ValueError:
+        sys.exit("Usage: <variant> must be an integer between 1 and 3")
+    input_file_path = sys.argv[2]
+    query_file_path = sys.argv[3]
+    input_file_name = Path(input_file_path).stem
+    output_file_path = os.path.join(
+        Path(input_file_path).parent, f"result_{input_file_name}.txt"
+    )
+    variant_map = {
+        1: fixed_size_arrays_trie,
+        2: hash_tables_trie,
+        3: balanced_search_tree_trie,
+    }
+    run(
+        variant,
+        input_file_path,
+        query_file_path,
+        output_file_path,
+        lambda: variant_map[variant].Trie(),
     )
