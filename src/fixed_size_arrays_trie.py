@@ -42,15 +42,17 @@ class Trie:
             if idx is not None:
                 child = current.children[idx]
                 if child is None:
+                    # Create a new child node if none exists for the character.
                     current.children[idx] = Node()
                     child = current.children[idx]
+                    # Mark the current node as non-leaf since it now has children.
                     current.is_leaf = False
                     if is_last_char:
                         return True
                 current = child
             else:
                 raise ValueError(f"Invalid character '{ch}' in word '{word}'")
-        # No new nodes created => already present
+        # No new nodes created => word is already present in the trie
         return False
 
     def contains(self, word: str) -> bool:
@@ -58,9 +60,11 @@ class Trie:
         for ch in word:
             idx = char_to_index(ch)
             if idx is None:
+                # Return False for unrecognized characters.
                 return False
             child = current.children[idx]
             if child is None:
+                # Return False if character path does not exist in the trie.
                 return False
             current = child
         return current.is_leaf
@@ -73,16 +77,19 @@ class Trie:
         for ch in word:
             idx = char_to_index(ch)
             if idx is None:
+                # Return False for unrecognized characters.
                 return False
             child = current.children[idx]
             if child is None:
+                # Return False if character path does not exist in the trie.
                 return False
             parent = current
             idx_to_delete = idx
             current = child
+        # parent or idx_to_delete being None here would be a bug.
         assert parent is not None and idx_to_delete is not None
         parent.children[idx_to_delete] = None
-        # Parent only has empty children
+        # If the parent has no remaining children, mark it as a leaf.
         if all(child is None for child in parent.children):
             parent.is_leaf = True
         return True
