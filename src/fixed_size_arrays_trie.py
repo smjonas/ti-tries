@@ -8,9 +8,9 @@ def char_to_index(ch: str) -> Optional[int]:
     if ch == "\0":
         return base.ALPHABET_SIZE - 1
     elif "a" <= ch <= "z":
-        return ord(ch) - ord("A")
+        return ord(ch) - ord("a")
     elif "A" <= ch <= "Z":
-        return ord(ch) - ord("a") + 26
+        return ord(ch) - ord("A") + 26
     elif "0" <= ch <= "9":
         return ord(ch) - ord("0") + 26 + 26
     else:
